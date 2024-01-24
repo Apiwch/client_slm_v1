@@ -21,7 +21,7 @@ function NavBar() {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container fluid>
-        <Navbar.Brand href="/home">Sound Level Monitoring</Navbar.Brand>
+        <Navbar.Brand href="#">Sound Level Monitoring</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
