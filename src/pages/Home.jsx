@@ -8,49 +8,52 @@ import DeviceList from '../components/DeviceList';
 import DeviceMap from '../components/DeviceMap';
 import AnotherComponent from '../components/AnotherComponent';
 import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
 import "./Home.css"
-import { CloseButton } from 'react-bootstrap';
+import "leaflet/dist/leaflet.css";
+
+
 
 
 
 function Home() {
+  const navigate = useNavigate(); 
   const username = localStorage.getItem('username');
   const [loginMessage, setLoginMessage] = useState('');
   const [devices, setDevices] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  const fetchLogin = async () =>{
+    try{
+      const response = await axios.get('http://192.168.1.44:5000/api/home', { headers: { Authorization: token } })
+      setLoginMessage(response.data.loginMessage)
+    }catch(err){
+      console.error('Failed to fetch data:', error.response.data.loginMessage);
+      if (error.response.status === 401) {
+        navigate('/')
+      }
+      if (error.response.status === 400) {
+        navigate('/')
+      }
+    }
+  }
 
-
-
-
+  const fetchDevice = async () =>{
+    try{
+      setLoading(true);
+      const response = await axios.get(`http://192.168.1.44:5000/api/Devices/${username}`);
+      setDevices(response.data);
+    }catch(err){
+      console.error('Error fetching data:', err);
+    }finally{
+      setLoading(false);
+    }
+  } 
 
   useEffect(() => {
-    // Fetch data from the protected route using the stored token
-    const token = localStorage.getItem('token');
-    axios.get('http://192.168.1.44:5000/api/home', { headers: { Authorization: token } })
-      .then((response) => {
-        setLoginMessage(response.data.loginMessage);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch data:', error.response.data.loginMessage);
-        if (error.response.status === 401) {
-          window.location.href = '/'
-        }
-        if (error.response.status === 400) {
-          window.location.href = '/'
-        }
-      });
-
-  }, []);
-
-  useEffect(() => {
-    axios.get(`http://192.168.1.44:5000/api/Devices/${username}`)
-      .then(response => {
-        setDevices(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+    fetchLogin();
+    fetchDevice();
   }, []);
 
 
@@ -63,14 +66,10 @@ function Home() {
 
     socket.onmessage = (event) => {
 
-
       const receivedMessages = JSON.parse(event.data).map((message) => ({
         ...message,
         status: checkStatus(message),
       }));
-
-
-      
 
       const filterMessage = receivedMessages.filter((el) => {
         return devices.some((f) => {
@@ -81,6 +80,7 @@ function Home() {
           return f.name === el.name;
         });
       });
+
 
       setMessages(filterMessage);
     };
@@ -120,10 +120,10 @@ function Home() {
       <Row style={{ margin: '5px' }}>
         <Col lg={4} style={{ marginTop: '10px' }}>
           <Card>
-            <Card.Header>Device List</Card.Header>
+            <Card.Header>Devices List</Card.Header>
             <Card.Body>
-              <DeviceList messages={messages} onItemClicked={handleItemClick}></DeviceList>
-              <Button variant="primary" style={{ marginTop: '10px' }} href='/DevicesManager'>Devices Manager</Button>
+              <DeviceList messages={messages} onItemClicked={handleItemClick} loading={loading}></DeviceList>
+              <Button variant="primary" style={{ marginTop: '10px' }}><Link style={{color: 'white', textDecoration: 'none'}} to={"/devices"}>Devices Manager</Link></Button>
             </Card.Body>
           </Card>
         </Col>
