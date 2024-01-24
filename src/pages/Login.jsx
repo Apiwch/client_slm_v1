@@ -20,7 +20,7 @@ function Login() {
         }
 
         try {
-            const response = await axios.post('https://18.143.173.11/api/login', { username, password });
+            const response = await axios.post('http://192.168.1.44:5000/api/login', { username, password });
 
             if (response.data && response.data.success) {
                 localStorage.setItem('token', response.data.token);
