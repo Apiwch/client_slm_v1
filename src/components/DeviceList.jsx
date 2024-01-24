@@ -47,7 +47,7 @@ function DeviceList({ messages, onItemClicked, loading }) {
                             </Row>
                             <Row>
                                 <Col>
-                                    <strong>Last Update:</strong> {new Date(Date.parse(message.timestamp)).toLocaleString('en-GB', {hour12: false} )}
+                                    <strong>Last Update:</strong> {message.timestamp}
                                 </Col>
                             </Row>
                         </ListGroup.Item>
