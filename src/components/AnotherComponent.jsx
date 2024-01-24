@@ -16,7 +16,7 @@ function AnotherComponent({ selectedDevices, messages }) {
     const filteredMessages = messages.filter(device => device.name === selectedDevices);
 
     const fetchData = () => {
-        axios.get(`http://192.168.1.44:5000/data/test_${selectedDevices}`)
+        axios.get(`http://192.168.1.44:5000/data/test_SLM_MQTT_${selectedDevices}`)
             .then(response => {
                 setData(response.data);
             })
