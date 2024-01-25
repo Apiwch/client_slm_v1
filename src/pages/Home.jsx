@@ -26,7 +26,7 @@ function Home() {
 
   const fetchLogin = async () =>{
     try{
-      const response = await axios.get('http://192.168.1.44:5000/api/home', { headers: { Authorization: token } })
+      const response = await axios.get('http://18.136.201.241:5000/api/home', { headers: { Authorization: token } })
       setLoginMessage(response.data.loginMessage)
     }catch(err){
       console.error('Failed to fetch data:', error.response.data.loginMessage);
@@ -42,7 +42,7 @@ function Home() {
   const fetchDevice = async () =>{
     try{
       setLoading(true);
-      const response = await axios.get(`http://192.168.1.44:5000/api/Devices/${username}`);
+      const response = await axios.get(`http://18.136.201.241:5000/api/Devices/${username}`);
       setDevices(response.data);
     }catch(err){
       console.error('Error fetching data:', err);
@@ -58,7 +58,7 @@ function Home() {
 
 
   useEffect(() => {
-    const socket = new WebSocket('ws://192.168.1.44:5000');
+    const socket = new WebSocket('ws://18.136.201.241:5000');
 
     socket.onopen = () => {
 
